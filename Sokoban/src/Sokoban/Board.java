@@ -59,7 +59,7 @@ public class Board {
         
         for (int i = 0; i < row; i++) {
             int u = 0;
-            if (i < 9) {
+            if (i <= 9) {
                 System.out.print(" ");
             }
             System.out.print(i + " ");
@@ -93,20 +93,15 @@ public class Board {
     }
     
     public void addHorizontalWall(int row, int col, int length){
-        if(col == 0){
-            length--;
-        }
-        for(int i = col; i <= length; i++){
-            walls.add(new Position(row, i));
+        
+        for(int i = 0; i < length; i++){
+            walls.add(new Position(row, col+i));
         }
     }
     
     public void addVerticalWall(int row, int col, int length){
-        if(row == 0){
-            length--;
-        }
-        for(int i = row; i <= length; i++){
-            walls.add(new Position(i, col));
+        for(int i = 0; i < length; i++){
+            walls.add(new Position(row+i, col));
         }
     }
     

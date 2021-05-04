@@ -13,7 +13,7 @@ public class Player {
 
     public static void main(String[] args) {
         Board b = new Board("Mon super plateau", 5, 6);
-        b.addHorizontalWall(0, 0, 6);
+        b.addHorizontalWall(0, 0, 5);
         b.addHorizontalWall(4, 0, 6);
         b.addVerticalWall(0, 0, 5);
         b.addVerticalWall(0, 5, 5);
@@ -22,7 +22,6 @@ public class Player {
         b.addTarget(3, 1);
         b.addTarget(3, 2);
         b.setPosition(3, 4);
-        b.showInfos();
         b.drawBoard();
     }
 }
