@@ -27,7 +27,7 @@ public class Board {
         this.row = row;
         this.col = col;
     }
-    
+
     public void drawNumbers() {
         int number = 0;
         System.out.print("   ");
@@ -40,8 +40,8 @@ public class Board {
         }
         System.out.println("");
     }
-    
-    public void drawContent(){
+
+    public void drawContent() {
         char[][] board = new char[row][col];
         for (char[] row : board) {
             Arrays.fill(row, '.');
@@ -56,7 +56,7 @@ public class Board {
             board[wall.row][wall.col] = '#';
         });
         board[character.row][character.col] = 'P';
-        
+
         for (int i = 0; i < row; i++) {
             int u = 0;
             if (i <= 9) {
@@ -72,58 +72,74 @@ public class Board {
             }
             System.out.println("");
         }
-        
+
     }
-    
-    public void drawBoard(){
+
+    public void drawBoard() {
+        System.out.println();
         drawNumbers();
-        drawContent();       
+        drawContent();
+        System.out.println();
     }
-    
-    public void setPosition(int row, int col){
+
+    public void setPosition(int row, int col) {
         character = new Position(row, col);
     }
-    
-    public void addBox(int row, int col){
+
+    public void addBox(int row, int col) {
         boxes.add(new Position(row, col));
     }
-    
-    public void addTarget(int row, int col){
+
+    public void addTarget(int row, int col) {
         targets.add(new Position(row, col));
     }
-    
-    public void addHorizontalWall(int row, int col, int length){
-        
-        for(int i = 0; i < length; i++){
-            walls.add(new Position(row, col+i));
+
+    public void addHorizontalWall(int row, int col, int length) {
+
+        for (int i = 0; i < length; i++) {
+            walls.add(new Position(row, col + i));
         }
     }
-    
-    public void addVerticalWall(int row, int col, int length){
-        for(int i = 0; i < length; i++){
-            walls.add(new Position(row+i, col));
+
+    public void addVerticalWall(int row, int col, int length) {
+        for (int i = 0; i < length; i++) {
+            walls.add(new Position(row + i, col));
         }
     }
-    
-    public void showInfos(){
-        
+
+    public void showInfos() {
+
         System.out.println("Walls : ");
-        for(Position p : walls){
+        for (Position p : walls) {
             System.out.println("* " + p.row + "," + p.col);
         }
-        
+
         System.out.println("Boxes : ");
-        for(Position p : boxes){
+        for (Position p : boxes) {
             System.out.println("* " + p.row + "," + p.col);
         }
-        
+
         System.out.println("Targets : ");
-        for(Position p : targets){
+        for (Position p : targets) {
             System.out.println("* " + p.row + "," + p.col);
         }
-        
+
         System.out.println("Character : ");
-            System.out.println("* " + character.row + "," + character.col);
+        System.out.println("* " + character.row + "," + character.col);
     }
-    
+
+    public boolean isInBoard(Position p) {
+        return p.row >= 0 && p.row < row && p.col >= 0 && p.col < col;
+    }
+
+    public boolean isCollisionWithWall(Directions d, Position p) {
+        boolean isWall = false;
+        for (Position wall : walls) {
+            if (wall.row == p.row && wall.col == p.col) {
+                isWall = true;
+            }
+        }
+        return isWall;
+    }
+
 }

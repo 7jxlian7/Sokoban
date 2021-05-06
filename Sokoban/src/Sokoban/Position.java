@@ -17,4 +17,15 @@ public class Position {
         this.row = x;
         this.col = y;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Position)) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        return this.equals(((Position) obj).row) && this.equals(((Position) obj).col);
+    }
 }
