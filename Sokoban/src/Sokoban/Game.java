@@ -33,19 +33,20 @@ public class Game {
     }
 
     public Board createBoard() {
-        Board b = new Board("Mon super plateau", 5, 6);
+        Board b = new Board("Mon super plateau", 10, 6);
         b.addHorizontalWall(0, 0, 5);
-        b.addHorizontalWall(4, 0, 6);
-        b.addVerticalWall(0, 0, 5);
-        b.addVerticalWall(0, 5, 5);
-        b.addBox(2, 1);
-        b.addBox(3, 3);
+        b.addHorizontalWall(9, 0, 6);
+        b.addVerticalWall(0, 0, 10);
+        b.addVerticalWall(0, 5, 10);
+        b.addHorizontalWall(5, 2, 2);
+        b.addBox(3, 1);
+        b.addBox(1, 4);
         b.addTarget(2, 1);
         b.addTarget(3, 3);
         b.setPosition(3, 4);
         return b;
     }
-    
+
     public boolean ended(Board b) {
         boolean booleann = b.targets.equals(b.boxes);
         System.out.println(booleann);
@@ -72,7 +73,7 @@ public class Game {
     public Position writeCoordinates(Board b) {
         Position p = new Position(0, 0);
         String choice;
-        boolean askAgain = true;
+        boolean askAgain;
         do {
             System.out.println("* Quelle action voulez-vous effectuer? (U, D, L, R)");
             //try{
@@ -102,24 +103,17 @@ public class Game {
         } while (askAgain);
         return p;
     }
-    
-    public void moveCharacter(Board b, Directions d) {
-        int move;
-        if(d == Directions.NORD || d == Directions.SUD){
-            move = d.mvtVertical();
-            
-        } else {
-            move = d.mvtHorizontal();
-        }
-        
-        Position p = new Position(b.character.row + move, b.character.col);
 
-        if (b.isInBoard(p) && !b.isCollisionWithWall(d,p)) {
-            if(d == Directions.NORD || d == Directions.SUD){
-            b.character.row += d.mvtVertical();
-        } else {
-            b.character.col += d.mvtHorizontal();
-        }
+    public void moveCharacter(Board b, Directions d) {
+       
+        Position p = new Position(b.character.row + d.mvtVertical(), b.character.col + d.mvtHorizontal());
+
+        if (b.isInBoard(p) && !b.isCollisionWithWall(d, p)) {
+            if (d == Directions.NORD || d == Directions.SUD) {
+                b.character.row += d.mvtVertical();
+            } else {
+                b.character.col += d.mvtHorizontal();
+            }
         } else {
             System.out.println("* Impossible d'aller dans cette direction.");
         }
