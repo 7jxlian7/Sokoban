@@ -14,44 +14,43 @@ import java.util.Scanner;
  */
 public class Game {
 
-    public int nbTurn;
     public Player player;
     public ArrayList<Position> movements = new ArrayList<>();
+    Board board;
 
-    public Game(Player p) {
+    public Game(Player p, Board b) {
         this.player = p;
+        this.board = b;
     }
 
     public void run() {
-        boolean ended = false;
-        Board b = createBoard();
-        b.drawBoard();
+        boolean ended;
+        board = createBoard();
+        board.drawBoard();
         do {
-            movements.add(move(b));
-            b.drawBoard();
+            move(board);
+            board.drawBoard();
+            ended = ended(board);
         } while (!ended);
+        System.out.println("* Partie terminée");
     }
 
     public Board createBoard() {
-        Board b = new Board("Mon super plateau", 10, 6);
-        b.addHorizontalWall(0, 0, 5);
-        b.addHorizontalWall(9, 0, 6);
-        b.addVerticalWall(0, 0, 10);
-        b.addVerticalWall(0, 5, 10);
-        b.addHorizontalWall(5, 2, 2);
-        b.addBox(3, 1);
-        b.addBox(1, 4);
-        b.addTarget(2, 1);
-        b.addTarget(3, 3);
-        b.setPosition(3, 4);
-        return b;
+        board.addHorizontalWall(0, 0, 5);
+        board.addHorizontalWall(9, 0, 6);
+        board.addVerticalWall(0, 0, 10);
+        board.addVerticalWall(0, 5, 10);
+        board.addHorizontalWall(5, 2, 2);
+        board.addBox(2, 1);
+        board.addBox(2, 3);
+        board.addTarget(3, 1);
+        board.addTarget(1, 4);
+        board.setPosition(3, 4);
+        return board;
     }
 
     public boolean ended(Board b) {
-        boolean booleann = b.targets.equals(b.boxes);
-        System.out.println(booleann);
-        return booleann;
-        //return false;
+        return b.targets.equals(b.boxes);
     }
 
     public Position move(Board b) {
@@ -71,27 +70,27 @@ public class Game {
     }
 
     public Position writeCoordinates(Board b) {
-        Position p = new Position(0, 0);
+        Position p = null;
         String choice;
         boolean askAgain;
         do {
             System.out.println("* Quelle action voulez-vous effectuer? (U, D, L, R)");
             //try{
             choice = readCoordinates(b);
-            askAgain = ended(b);
+            askAgain = false;
             for (int i = 0; i < choice.length(); i++) {
                 switch (choice.charAt(i)) {
                     case 'U':
-                        moveCharacter(b, Directions.NORD);
+                        p = moveCharacter(b, Directions.NORD);
                         break;
                     case 'D':
-                        moveCharacter(b, Directions.SUD);
+                        p = moveCharacter(b, Directions.SUD);
                         break;
                     case 'L':
-                        moveCharacter(b, Directions.OUEST);
+                        p = moveCharacter(b, Directions.OUEST);
                         break;
                     case 'R':
-                        moveCharacter(b, Directions.EST);
+                        p = moveCharacter(b, Directions.EST);
                         break;
                     default:
                         break;
@@ -104,8 +103,8 @@ public class Game {
         return p;
     }
 
-    public void moveCharacter(Board b, Directions d) {
-       
+    public Position moveCharacter(Board b, Directions d) {
+
         Position p = new Position(b.character.row + d.mvtVertical(), b.character.col + d.mvtHorizontal());
 
         if (b.isInBoard(p) && !b.isCollisionWithWall(d, p)) {
@@ -114,8 +113,15 @@ public class Game {
             } else {
                 b.character.col += d.mvtHorizontal();
             }
+            addPosition(p);
+            System.out.println("* Coup effectué : " + d.toString());
         } else {
             System.out.println("* Impossible d'aller dans cette direction.");
         }
+        return p;
+    }
+    
+    public void addPosition(Position p){
+        movements.add(p);
     }
 }

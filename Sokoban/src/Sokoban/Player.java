@@ -12,7 +12,8 @@ package Sokoban;
 public class Player {
     
     public static void main(String[] args) {
-        Game g = new Game(new Player());
+        Board b = new Board("Mon super plateau", 10, 6);
+        Game g = new Game(new Player(), b);
         g.run();
     }
 }

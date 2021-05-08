@@ -46,11 +46,11 @@ public class Board {
         for (char[] row : board) {
             Arrays.fill(row, '.');
         }
-        boxes.forEach(box -> {
-            board[box.row][box.col] = 'C';
-        });
         targets.forEach(target -> {
             board[target.row][target.col] = 'x';
+        });
+        boxes.forEach(box -> {
+            board[box.row][box.col] = 'C';
         });
         walls.forEach(wall -> {
             board[wall.row][wall.col] = '#';
@@ -110,22 +110,24 @@ public class Board {
     public void showInfos() {
 
         System.out.println("Walls : ");
-        for (Position p : walls) {
+        walls.forEach(p -> {
             System.out.println("* " + p.row + "," + p.col);
-        }
+        });
 
         System.out.println("Boxes : ");
-        for (Position p : boxes) {
+        boxes.forEach(p -> {
             System.out.println("* " + p.row + "," + p.col);
-        }
+        });
 
         System.out.println("Targets : ");
-        for (Position p : targets) {
+        targets.forEach(p -> {
             System.out.println("* " + p.row + "," + p.col);
-        }
+        });
 
         System.out.println("Character : ");
         System.out.println("* " + character.row + "," + character.col);
+
+        System.out.println(targets.hashCode() + " " + boxes.hashCode());
     }
 
     public boolean isInBoard(Position p) {
@@ -141,5 +143,4 @@ public class Board {
         }
         return isWall;
     }
-
 }

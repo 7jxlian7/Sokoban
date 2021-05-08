@@ -5,6 +5,8 @@
  */
 package Sokoban;
 
+import java.util.Objects;
+
 /**
  *
  * @author jforme
@@ -17,15 +19,30 @@ public class Position {
         this.row = x;
         this.col = y;
     }
+    
+    @Override
+    public int hashCode(){
+        return Objects.hash(row, col);
+    }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Position)) {
-            return false;
-        }
-        if (obj == this) {
+        if (this == obj) {
             return true;
         }
-        return this.equals(((Position) obj).row) && this.equals(((Position) obj).col);
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Position other = (Position) obj;
+        if (this.row != other.row) {
+            return false;
+        }
+        if (this.col != other.col) {
+            return false;
+        }
+        return true;
     }
 }
