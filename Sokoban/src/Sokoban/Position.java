@@ -40,9 +40,6 @@ public class Position {
         if (this.row != other.row) {
             return false;
         }
-        if (this.col != other.col) {
-            return false;
-        }
-        return true;
+        return this.col == other.col;
     }
 }

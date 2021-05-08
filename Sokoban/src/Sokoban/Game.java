@@ -105,23 +105,37 @@ public class Game {
 
     public Position moveCharacter(Board b, Directions d) {
 
-        Position p = new Position(b.character.row + d.mvtVertical(), b.character.col + d.mvtHorizontal());
+        Position nextPosition = new Position(b.character.row + d.mvtVertical(), b.character.col + d.mvtHorizontal());
+        Position p2 = new Position(nextPosition.row + d.mvtVertical(), nextPosition.col + d.mvtHorizontal());
+              
+        if (b.isInBoard(nextPosition) && !b.isCollisionWithWall(d, nextPosition)) {
 
-        if (b.isInBoard(p) && !b.isCollisionWithWall(d, p)) {
-            if (d == Directions.NORD || d == Directions.SUD) {
-                b.character.row += d.mvtVertical();
-            } else {
-                b.character.col += d.mvtHorizontal();
+            for (Position box : board.boxes) {
+                if (nextPosition.equals(box) && !b.isCollisionWithWall(d, p2) && !b.isCollisionWithBox(b, p2)) {
+                    if (d == Directions.NORD || d == Directions.SUD) {
+                        box.row += d.mvtVertical();
+                    } else {
+                        box.col += d.mvtHorizontal();
+                    }
+                }
             }
-            addPosition(p);
+
+            if (!board.boxes.contains(nextPosition) && !board.boxes.contains(p2)) {
+                if ((d == Directions.NORD || d == Directions.SUD)) {
+                    b.character.row += d.mvtVertical();
+                } else {
+                    b.character.col += d.mvtHorizontal();
+                }
+                addPosition(nextPosition);
+            }
             System.out.println("* Coup effectué : " + d.toString());
         } else {
             System.out.println("* Impossible d'aller dans cette direction.");
         }
-        return p;
+        return nextPosition;
     }
-    
-    public void addPosition(Position p){
+
+    public void addPosition(Position p) {
         movements.add(p);
     }
 }

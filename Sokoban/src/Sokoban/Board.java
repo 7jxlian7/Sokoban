@@ -143,4 +143,14 @@ public class Board {
         }
         return isWall;
     }
+
+    boolean isCollisionWithBox(Board b, Position p) {
+        boolean isBox = false;
+        for(Position box : boxes){
+            if (box.row == p.row && box.col == p.col) {
+                isBox = true;
+            }
+        }
+        return isBox;
+    }
 }
