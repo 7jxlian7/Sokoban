@@ -134,6 +134,10 @@ public class Board {
         return p.row >= 0 && p.row < row && p.col >= 0 && p.col < col;
     }
 
+    public boolean isFree(Position p){
+        return !isCollisionWithWall(p) && !isCollisionWithBox(p);
+    }
+    
     public boolean isCollisionWithWall(Position p) {
         boolean isWall = false;
         for (Position wall : walls) {

@@ -32,7 +32,7 @@ public class Game {
             board.drawBoard();
             ended = ended(board);
         } while (!ended);
-        System.out.println("* Partie terminée");
+        displayWinningText();
     }
 
     public Board createBoard() {
@@ -47,6 +47,16 @@ public class Game {
         board.addTarget(1, 4);
         board.setPosition(3, 4);
         return board;
+    }
+
+    public void displayWinningText() {
+        System.out.println("* Partie terminée");
+        System.out.println("* Félicitations! Voici la liste des déplacements : ");
+        System.out.print("*");
+        movements.forEach(move -> {
+            System.out.print(" (" + move.row + "," + move.col + ")");
+        });
+        System.out.println();
     }
 
     public boolean ended(Board b) {
@@ -75,7 +85,6 @@ public class Game {
         boolean askAgain;
         do {
             System.out.println("* Quelle action voulez-vous effectuer? (U, D, L, R)");
-            //try{
             choice = readCoordinates(b);
             askAgain = false;
             for (int i = 0; i < choice.length(); i++) {
@@ -93,12 +102,10 @@ public class Game {
                         p = moveCharacter(b, Directions.EST);
                         break;
                     default:
+                        System.out.println("* Le mouvement " + choice.charAt(i) + " est invalide.");
                         break;
                 }
             }
-            //} catch (InvalidCoordinatesException e){
-            //   System.out.println("TEST");
-            //}
         } while (askAgain);
         return p;
     }
@@ -106,40 +113,31 @@ public class Game {
     public Position moveCharacter(Board board, Directions d) {
 
         Position nextPosition = new Position(board.character.row + d.mvtVertical(), board.character.col + d.mvtHorizontal());
-        Position nextBoxPosition = new Position(nextPosition.row + d.mvtVertical(), nextPosition.col + d.mvtHorizontal());
+        Position nextBoxPosition = nextPosition;
 
         // Si notre prochaine position n'est pas un mur et est dans le plateau
         if (!board.isCollisionWithWall(nextPosition) && board.isInBoard(nextPosition)) {
-            // Si notre prochaine position contient une case
-            if (board.boxes.contains(nextPosition)) {
-                // Si la position après ma boîte est libre
-                if (!board.isCollisionWithWall(nextBoxPosition) && !board.boxes.contains(nextBoxPosition) && board.isInBoard(nextBoxPosition)) {
-                    board.boxes.remove(nextPosition);
-                    board.boxes.add(nextBoxPosition);
-                    board.setPosition(nextPosition.row, nextPosition.col);
-                // Si la position après ma boîte est une autre boîte
-                } else if (board.boxes.contains(nextBoxPosition)) {
-                    boolean isBox = true;
-                    while (board.boxes.contains(nextBoxPosition) && isBox) {
-                        nextBoxPosition = new Position(nextBoxPosition.row + d.mvtVertical(), nextBoxPosition.col + d.mvtHorizontal());
-                        // Si ma position après ma boîte est libre et est dans le plateau
-                        if (!board.isCollisionWithWall(nextBoxPosition) && !board.boxes.contains(nextBoxPosition) && board.isInBoard(nextBoxPosition)) {
-                            board.boxes.remove(nextPosition);
-                            board.boxes.add(nextBoxPosition);
-                            board.setPosition(nextPosition.row, nextPosition.col);
-                            isBox = false;
-                        }
-
+            // Si notre prochaine position contient une boîte
+            if (board.isCollisionWithBox(nextPosition)) {
+                boolean isBox = true;
+                do {
+                    nextBoxPosition = new Position(nextBoxPosition.row + d.mvtVertical(), nextBoxPosition.col + d.mvtHorizontal());
+                    // Si ma position après ma boîte est libre et est dans le plateau
+                    if (!board.isCollisionWithWall(nextBoxPosition) && !board.isCollisionWithBox(nextBoxPosition) && board.isInBoard(nextBoxPosition)) {
+                        board.boxes.remove(nextPosition);
+                        board.boxes.add(nextBoxPosition);
+                        board.setPosition(nextPosition.row, nextPosition.col);
+                        addPosition(nextPosition);
+                        isBox = false;
                     }
-                }
-            // Si pas de case sur notre prochaine position, on avance normalement
+                } while (board.isCollisionWithBox(nextBoxPosition) && isBox);
+                // Si pas de boîte sur notre prochaine position, on avance normalement
             } else {
                 board.setPosition(nextPosition.row, nextPosition.col);
+                addPosition(nextPosition);
             }
         }
-
         return nextPosition;
-
     }
 
     public void addPosition(Position p) {
