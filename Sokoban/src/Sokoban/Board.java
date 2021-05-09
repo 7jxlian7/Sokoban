@@ -77,6 +77,8 @@ public class Board {
 
     public void drawBoard() {
         System.out.println();
+        System.out.println("* " + name + " *");
+        System.out.println();
         drawNumbers();
         drawContent();
         System.out.println();
@@ -126,8 +128,6 @@ public class Board {
 
         System.out.println("Character : ");
         System.out.println("* " + character.row + "," + character.col);
-
-        System.out.println(targets.hashCode() + " " + boxes.hashCode());
     }
 
     public boolean isInBoard(Position p) {

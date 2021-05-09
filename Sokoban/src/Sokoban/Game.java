@@ -12,7 +12,7 @@ import java.util.Scanner;
  *
  * @author jforme
  */
-public class Game {
+public class Game implements BoardBuilder {
 
     public Player player;
     public ArrayList<Position> movements = new ArrayList<>();
@@ -23,11 +23,25 @@ public class Game {
         this.board = b;
     }
 
-    public void run() {
+    public void run() throws BuilderException {
         boolean ended;
-        board = createBoard();
+        /*board = createBoard();
+        board.drawBoard();*/
+
+        TextBoardBuilder builder = new TextBoardBuilder("A Simple Board");
+        builder.addRow("#####");
+        builder.addRow("#x.x#");
+        builder.addRow("#C.C#");
+        builder.addRow("#...#");
+        builder.addRow("#.P.#");
+        builder.addRow("#.#.#");
+        builder.addRow("#...#");
+        builder.addRow("#####");
+        builder.displayTextBoard();
+        
+        Board board = builder.build();
         board.drawBoard();
-        do {
+       do {
             move(board);
             board.drawBoard();
             ended = ended(board);
@@ -142,5 +156,10 @@ public class Game {
 
     public void addPosition(Position p) {
         movements.add(p);
+    }
+
+    @Override
+    public Board build() throws BuilderException {
+        return createBoard();
     }
 }
