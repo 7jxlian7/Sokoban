@@ -134,7 +134,7 @@ public class Board {
         return p.row >= 0 && p.row < row && p.col >= 0 && p.col < col;
     }
 
-    public boolean isCollisionWithWall(Directions d, Position p) {
+    public boolean isCollisionWithWall(Position p) {
         boolean isWall = false;
         for (Position wall : walls) {
             if (wall.row == p.row && wall.col == p.col) {
@@ -144,7 +144,7 @@ public class Board {
         return isWall;
     }
 
-    boolean isCollisionWithBox(Board b, Position p) {
+    boolean isCollisionWithBox(Position p) {
         boolean isBox = false;
         for(Position box : boxes){
             if (box.row == p.row && box.col == p.col) {

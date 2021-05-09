@@ -42,7 +42,7 @@ public class Game {
         board.addVerticalWall(0, 5, 10);
         board.addHorizontalWall(5, 2, 2);
         board.addBox(2, 1);
-        board.addBox(2, 3);
+        board.addBox(2, 4);
         board.addTarget(3, 1);
         board.addTarget(1, 4);
         board.setPosition(3, 4);
@@ -103,36 +103,43 @@ public class Game {
         return p;
     }
 
-    public Position moveCharacter(Board b, Directions d) {
+    public Position moveCharacter(Board board, Directions d) {
 
-        Position nextPosition = new Position(b.character.row + d.mvtVertical(), b.character.col + d.mvtHorizontal());
-        Position p2 = new Position(nextPosition.row + d.mvtVertical(), nextPosition.col + d.mvtHorizontal());
-              
-        if (b.isInBoard(nextPosition) && !b.isCollisionWithWall(d, nextPosition)) {
+        Position nextPosition = new Position(board.character.row + d.mvtVertical(), board.character.col + d.mvtHorizontal());
+        Position nextBoxPosition = new Position(nextPosition.row + d.mvtVertical(), nextPosition.col + d.mvtHorizontal());
 
-            for (Position box : board.boxes) {
-                if (nextPosition.equals(box) && !b.isCollisionWithWall(d, p2) && !b.isCollisionWithBox(b, p2)) {
-                    if (d == Directions.NORD || d == Directions.SUD) {
-                        box.row += d.mvtVertical();
-                    } else {
-                        box.col += d.mvtHorizontal();
+        // Si notre prochaine position n'est pas un mur et est dans le plateau
+        if (!board.isCollisionWithWall(nextPosition) && board.isInBoard(nextPosition)) {
+            // Si notre prochaine position contient une case
+            if (board.boxes.contains(nextPosition)) {
+                // Si la position après ma boîte est libre
+                if (!board.isCollisionWithWall(nextBoxPosition) && !board.boxes.contains(nextBoxPosition) && board.isInBoard(nextBoxPosition)) {
+                    board.boxes.remove(nextPosition);
+                    board.boxes.add(nextBoxPosition);
+                    board.setPosition(nextPosition.row, nextPosition.col);
+                // Si la position après ma boîte est une autre boîte
+                } else if (board.boxes.contains(nextBoxPosition)) {
+                    boolean isBox = true;
+                    while (board.boxes.contains(nextBoxPosition) && isBox) {
+                        nextBoxPosition = new Position(nextBoxPosition.row + d.mvtVertical(), nextBoxPosition.col + d.mvtHorizontal());
+                        // Si ma position après ma boîte est libre et est dans le plateau
+                        if (!board.isCollisionWithWall(nextBoxPosition) && !board.boxes.contains(nextBoxPosition) && board.isInBoard(nextBoxPosition)) {
+                            board.boxes.remove(nextPosition);
+                            board.boxes.add(nextBoxPosition);
+                            board.setPosition(nextPosition.row, nextPosition.col);
+                            isBox = false;
+                        }
+
                     }
                 }
+            // Si pas de case sur notre prochaine position, on avance normalement
+            } else {
+                board.setPosition(nextPosition.row, nextPosition.col);
             }
-
-            if (!board.boxes.contains(nextPosition) && !board.boxes.contains(p2)) {
-                if ((d == Directions.NORD || d == Directions.SUD)) {
-                    b.character.row += d.mvtVertical();
-                } else {
-                    b.character.col += d.mvtHorizontal();
-                }
-                addPosition(nextPosition);
-            }
-            System.out.println("* Coup effectué : " + d.toString());
-        } else {
-            System.out.println("* Impossible d'aller dans cette direction.");
         }
+
         return nextPosition;
+
     }
 
     public void addPosition(Position p) {
