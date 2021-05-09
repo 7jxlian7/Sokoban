@@ -43,7 +43,6 @@ public class TextBoardBuilder implements BoardBuilder {
                         board.character = p;
                         break;
                     default:
-                        System.out.println("vide / invalide");
                         break;
                 }
                 i++;
@@ -58,11 +57,5 @@ public class TextBoardBuilder implements BoardBuilder {
         colNumbers = row.length();
         rowNumbers++;
 
-    }
-
-    void displayTextBoard() {
-        System.out.println(textBoard);
-        System.out.println(colNumbers);
-        System.out.println(rowNumbers);
     }
 }

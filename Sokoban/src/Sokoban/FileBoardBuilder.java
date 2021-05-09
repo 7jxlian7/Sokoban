@@ -9,6 +9,12 @@ package Sokoban;
  *
  * @author Julian Forme
  */
-public class FileBoardBuilder {
-    
+public class FileBoardBuilder implements BoardBuilder {
+
+    @Override
+    public Board build() throws BuilderException {
+        
+        return null;
+    }
+
 }

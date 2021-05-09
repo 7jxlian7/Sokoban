@@ -37,7 +37,6 @@ public class Game implements BoardBuilder {
         builder.addRow("#.#.#");
         builder.addRow("#...#");
         builder.addRow("#####");
-        builder.displayTextBoard();
         
         Board board = builder.build();
         board.drawBoard();
@@ -65,7 +64,7 @@ public class Game implements BoardBuilder {
 
     public void displayWinningText() {
         System.out.println("* Partie terminée");
-        System.out.println("* Félicitations! Voici la liste des déplacements : ");
+        System.out.println("* Félicitations! Voici la liste des déplacements effectués : ");
         System.out.print("*");
         movements.forEach(move -> {
             System.out.print(" (" + move.row + "," + move.col + ")");
