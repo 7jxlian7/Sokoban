@@ -10,5 +10,7 @@ package Sokoban;
  * @author Julian Forme
  */
 class BuilderException extends Exception {
-    
+    public BuilderException(String s){
+        System.out.println(s);
+    }
 }

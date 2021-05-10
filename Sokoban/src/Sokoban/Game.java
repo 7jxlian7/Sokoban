@@ -5,6 +5,7 @@
  */
 package Sokoban;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -24,12 +25,12 @@ public class Game implements BoardBuilder {
 
     public void run() throws BuilderException {
         boolean ended;
-        
+
         /*board = createBoard();
         board.drawBoard();*/
-
-        FileBoardBuilder builder = new FileBoardBuilder("LeVel2");
         
+        FileBoardBuilder builder = new FileBoardBuilder("level1");
+
         /*builder.addRow("#####");
         builder.addRow("#x.x#");
         builder.addRow("#x.C#");
@@ -38,15 +39,19 @@ public class Game implements BoardBuilder {
         builder.addRow("#.#.#");
         builder.addRow("#...#");
         builder.addRow("#####");*/
-        
-        board = builder.build();
-        board.drawBoard();
-       do {
-            move(board);
+        try {
+            board = builder.build();
             board.drawBoard();
-            ended = ended(board);
-        } while (!ended);
-        displayWinningText();
+            do {
+                move(board);
+                board.drawBoard();
+                ended = ended(board);
+            } while (!ended);
+            displayWinningText();
+        } catch (BuilderException e) {
+
+        }
+
     }
 
     public Board createBoard() {
@@ -105,16 +110,16 @@ public class Game implements BoardBuilder {
             for (int i = 0; i < choice.length(); i++) {
                 switch (choice.charAt(i)) {
                     case 'U':
-                        p = moveCharacter(b, Directions.NORD);
+                        p = makeMoves(b, Directions.NORD);
                         break;
                     case 'D':
-                        p = moveCharacter(b, Directions.SUD);
+                        p = makeMoves(b, Directions.SUD);
                         break;
                     case 'L':
-                        p = moveCharacter(b, Directions.OUEST);
+                        p = makeMoves(b, Directions.OUEST);
                         break;
                     case 'R':
-                        p = moveCharacter(b, Directions.EST);
+                        p = makeMoves(b, Directions.EST);
                         break;
                     default:
                         System.out.println("* Le mouvement " + choice.charAt(i) + " est invalide.");
@@ -125,34 +130,52 @@ public class Game implements BoardBuilder {
         return p;
     }
 
-    public Position moveCharacter(Board board, Directions d) {
-
+    public Position makeMoves(Board board, Directions d) {
         Position nextPosition = new Position(board.character.row + d.mvtVertical(), board.character.col + d.mvtHorizontal());
-        Position nextBoxPosition = nextPosition;
 
         // Si notre prochaine position n'est pas un mur et est dans le plateau
         if (!board.isCollisionWithWall(nextPosition) && board.isInBoard(nextPosition)) {
             // Si notre prochaine position contient une boîte
             if (board.isCollisionWithBox(nextPosition)) {
-                boolean isBox = true;
-                do {
-                    nextBoxPosition = new Position(nextBoxPosition.row + d.mvtVertical(), nextBoxPosition.col + d.mvtHorizontal());
-                    // Si ma position après ma boîte est libre et est dans le plateau
-                    if (!board.isCollisionWithWall(nextBoxPosition) && !board.isCollisionWithBox(nextBoxPosition) && board.isInBoard(nextBoxPosition)) {
-                        board.boxes.remove(nextPosition);
-                        board.boxes.add(nextBoxPosition);
-                        board.setPosition(nextPosition.row, nextPosition.col);
-                        addPosition(nextPosition);
-                        isBox = false;
-                    }
-                } while (board.isCollisionWithBox(nextBoxPosition) && isBox);
-            // Si pas de boîte sur notre prochaine position, on avance normalement
+                boolean isBoxMoving = moveBox(nextPosition, d);
+                if (isBoxMoving) {
+                    moveCharacter(nextPosition);
+                }
+                // Si pas de boîte sur notre prochaine position, on avance normalement
             } else {
-                board.setPosition(nextPosition.row, nextPosition.col);
-                addPosition(nextPosition);
+                moveCharacter(nextPosition);
             }
         }
         return nextPosition;
+    }
+
+    public void moveCharacter(Position nextPosition) {
+        board.setPosition(nextPosition.row, nextPosition.col);
+        addPosition(nextPosition);
+    }
+
+    /**
+     * Méthode permettant de déplacer une boîte et de renvoyer vrai si une boîte
+     * a été déplacée
+     *
+     * @param nextPosition Position dans de la boîte à bouger
+     * @param d Direction dans laquelle bouger la boîte
+     * @return true ssi une boîte a été déplacée
+     */
+    public boolean moveBox(Position nextPosition, Directions d) {
+        Position nextBoxPosition = nextPosition;
+        boolean isBoxMoving = false;
+        // On regarde la position suivant tant qu'on tombe sur une case
+        do {
+            nextBoxPosition = new Position(nextBoxPosition.row + d.mvtVertical(), nextBoxPosition.col + d.mvtHorizontal());
+        } while (board.isCollisionWithBox(nextBoxPosition));
+        // Si notre position est libre, on bouge, sinon on ne fait rien
+        if (!board.isCollisionWithWall(nextBoxPosition) && board.isInBoard(nextBoxPosition)) {
+            board.boxes.remove(nextPosition);
+            board.boxes.add(nextBoxPosition);
+            isBoxMoving = true;
+        }
+        return isBoxMoving;
     }
 
     public void addPosition(Position p) {

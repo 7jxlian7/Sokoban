@@ -23,31 +23,32 @@ public class TextBoardBuilder implements BoardBuilder {
 
     @Override
     public Board build() throws BuilderException {
-        Board board = new Board(name, rowNumbers, colNumbers);
-        Position p;
-        int i = 0;
-        for (int row = 0; row < rowNumbers; row++) {
-            for (int col = 0; col <= colNumbers; col++) {
-                p = new Position(row, col);
-                switch (textBoard.charAt(i)) {
-                    case '#':
-                        board.walls.add(p);
-                        break;
-                    case 'C':
-                        board.boxes.add(p);
-                        break;
-                    case 'x':
-                        board.targets.add(p);
-                        break;
-                    case 'P':
-                        board.character = p;
-                        break;
-                    default:
-                        break;
+            board = new Board(name, rowNumbers, colNumbers);
+            Position p;
+            int i = 0;
+            for (int row = 0; row < rowNumbers; row++) {
+                for (int col = 0; col <= colNumbers; col++) {
+                    p = new Position(row, col);
+                    switch (textBoard.charAt(i)) {
+                        case '#':
+                            board.walls.add(p);
+                            break;
+                        case 'C':
+                            board.boxes.add(p);
+                            break;
+                        case 'x':
+                            board.targets.add(p);
+                            break;
+                        case 'P':
+                            board.character = p;
+                            break;
+                        default:
+                            break;
+                    }
+                    i++;
                 }
-                i++;
             }
-        }
+        
 
         return board;
     }

@@ -25,17 +25,22 @@ public class FileBoardBuilder implements BoardBuilder {
     @Override
     public Board build() throws BuilderException {
         Board b = null;
-        try ( Scanner scanner = new Scanner(new File("data/"+ level +".txt"))) {
-            int i = 0;
-            nameOfBoard = scanner.nextLine();
-            TextBoardBuilder board = new TextBoardBuilder(nameOfBoard);
-            while (scanner.hasNextLine()) {
-                board.addRow(scanner.nextLine());
-                i++;
+        try ( Scanner scanner = new Scanner(new File("data/" + level + ".txt"))) {
+            try {
+                int i = 0;
+                nameOfBoard = scanner.nextLine();
+                TextBoardBuilder board = new TextBoardBuilder(nameOfBoard);
+                while (scanner.hasNextLine()) {
+                    board.addRow(scanner.nextLine());
+                    i++;
+                }
+
+                b = board.build();
+            } catch (StringIndexOutOfBoundsException e) {
+                throw new BuilderException("* Impossible de créer le plateau");
             }
-            b = board.build();
         } catch (FileNotFoundException ex) {
-            System.out.println("Fichier non trouvé : " + ex);
+            throw new BuilderException("* Fichier non trouvé : " + level + ".txt");
         }
 
         return b;
