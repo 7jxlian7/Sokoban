@@ -11,9 +11,8 @@ package Sokoban;
  */
 public class Player {
     
-    public static void main(String[] args) {
-        Board b = new Board("Mon super plateau", 10, 6);
-        Game g = new Game(new Player(), b);
+    public static void main(String[] args) throws BuilderException {
+        Game g = new Game(new Player());
         g.run();
     }
 }

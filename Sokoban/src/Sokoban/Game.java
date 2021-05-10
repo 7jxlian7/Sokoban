@@ -18,9 +18,8 @@ public class Game implements BoardBuilder {
     public ArrayList<Position> movements = new ArrayList<>();
     Board board;
 
-    public Game(Player p, Board b) {
+    public Game(Player p) {
         this.player = p;
-        this.board = b;
     }
 
     public void run() throws BuilderException {
@@ -31,9 +30,9 @@ public class Game implements BoardBuilder {
         TextBoardBuilder builder = new TextBoardBuilder("A Simple Board");
         builder.addRow("#####");
         builder.addRow("#x.x#");
-        builder.addRow("#C.C#");
-        builder.addRow("#...#");
-        builder.addRow("#.P.#");
+        builder.addRow("#x.C#");
+        builder.addRow("#C..#");
+        builder.addRow("#CP.#");
         builder.addRow("#.#.#");
         builder.addRow("#...#");
         builder.addRow("#####");
