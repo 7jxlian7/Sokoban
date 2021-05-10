@@ -21,6 +21,7 @@ public class Board {
     Set<Position> walls = new HashSet<>();
     Set<Position> targets = new HashSet<>();
     Position character;
+    char[][] board;
 
     public Board(String name, int row, int col) {
         this.name = name;
@@ -42,7 +43,7 @@ public class Board {
     }
 
     public void drawContent() {
-        char[][] board = new char[row][col];
+        board = new char[row][col];
         for (char[] row : board) {
             Arrays.fill(row, '.');
         }
@@ -65,9 +66,7 @@ public class Board {
             System.out.print(i + " ");
             while (u < col) {
 
-                System.out.print(" ");
-                System.out.print(board[i][u]);
-                System.out.print(" ");
+                System.out.print(" " + board[i][u] + " ");
                 u++;
             }
             System.out.println("");
@@ -97,7 +96,6 @@ public class Board {
     }
 
     public void addHorizontalWall(int row, int col, int length) {
-
         for (int i = 0; i < length; i++) {
             walls.add(new Position(row, col + i));
         }

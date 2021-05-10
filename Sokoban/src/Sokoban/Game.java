@@ -24,20 +24,22 @@ public class Game implements BoardBuilder {
 
     public void run() throws BuilderException {
         boolean ended;
+        
         /*board = createBoard();
         board.drawBoard();*/
 
-        TextBoardBuilder builder = new TextBoardBuilder("A Simple Board");
-        builder.addRow("#####");
+        FileBoardBuilder builder = new FileBoardBuilder("LeVel2");
+        
+        /*builder.addRow("#####");
         builder.addRow("#x.x#");
         builder.addRow("#x.C#");
         builder.addRow("#C..#");
         builder.addRow("#CP.#");
         builder.addRow("#.#.#");
         builder.addRow("#...#");
-        builder.addRow("#####");
+        builder.addRow("#####");*/
         
-        Board board = builder.build();
+        board = builder.build();
         board.drawBoard();
        do {
             move(board);
@@ -84,10 +86,11 @@ public class Game implements BoardBuilder {
         String choice;
         Scanner in = new Scanner(System.in);
         choice = in.nextLine();
-        if ("/leave".equals(choice)) {
+        if ("/leave".equals(choice) || "/quit".equals(choice)) {
             System.out.println("* La partie vient d'être annulée");
             System.exit(0);
         }
+        choice = choice.toUpperCase();
         return choice;
     }
 
@@ -143,7 +146,7 @@ public class Game implements BoardBuilder {
                         isBox = false;
                     }
                 } while (board.isCollisionWithBox(nextBoxPosition) && isBox);
-                // Si pas de boîte sur notre prochaine position, on avance normalement
+            // Si pas de boîte sur notre prochaine position, on avance normalement
             } else {
                 board.setPosition(nextPosition.row, nextPosition.col);
                 addPosition(nextPosition);
