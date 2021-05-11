@@ -66,7 +66,6 @@ public class Board {
             }
             System.out.print(i + " ");
             while (u < col) {
-
                 System.out.print(" " + board[i][u] + " ");
                 u++;
             }

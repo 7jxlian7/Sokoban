@@ -76,6 +76,7 @@ public class Game implements BoardBuilder {
             System.out.print(" (" + move.row + "," + move.col + ")");
         });
         System.out.println();
+        System.out.println();
     }
 
     public boolean ended(Board b) {

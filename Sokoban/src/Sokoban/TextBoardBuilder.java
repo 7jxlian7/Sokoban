@@ -27,9 +27,9 @@ public class TextBoardBuilder implements BoardBuilder {
         Position p;
         int i = 0;
         // Savoir si le plateau est conforme
-        if (textBoard.length() == (colNumbers * rowNumbers) + (rowNumbers)) {
+        if (textBoard.length() == (colNumbers * rowNumbers)) {
             for (int row = 0; row < rowNumbers; row++) {
-                for (int col = 0; col <= colNumbers; col++) {
+                for (int col = 0; col < colNumbers; col++) {
                     p = new Position(row, col);
                     switch (textBoard.charAt(i)) {
                         case '#':
@@ -57,7 +57,7 @@ public class TextBoardBuilder implements BoardBuilder {
     }
 
     void addRow(String row) {
-        textBoard = textBoard.concat(row + "\n");
+        textBoard = textBoard.concat(row);
         colNumbers = row.length();
         rowNumbers++;
 
