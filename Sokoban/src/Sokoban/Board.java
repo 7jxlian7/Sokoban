@@ -43,6 +43,7 @@ public class Board {
     }
 
     public void drawContent() {
+        
         board = new char[row][col];
         for (char[] row : board) {
             Arrays.fill(row, '.');
@@ -71,16 +72,16 @@ public class Board {
             }
             System.out.println("");
         }
-
+        
     }
 
-    public void drawBoard() {
+    public void drawBoard() throws BuilderException {
         System.out.println();
         System.out.println("* " + name + " *");
         System.out.println();
         drawNumbers();
         drawContent();
-        System.out.println();
+        System.out.println(); 
     }
 
     public void setPosition(int row, int col) {

@@ -1,6 +1,6 @@
-Le Magnifiak Board de Ju
+Un Board assez simple...
 ##########
 #x.x#....#
-..C...CP.#
+#.C...CP.#
 #........#
 ##########

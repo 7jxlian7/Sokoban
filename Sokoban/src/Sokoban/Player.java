@@ -7,7 +7,7 @@ package Sokoban;
  */
 /**
  *
- * @author Julian
+ * @author Julian Forme
  */
 public class Player {
     

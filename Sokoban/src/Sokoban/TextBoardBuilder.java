@@ -23,9 +23,11 @@ public class TextBoardBuilder implements BoardBuilder {
 
     @Override
     public Board build() throws BuilderException {
-            board = new Board(name, rowNumbers, colNumbers);
-            Position p;
-            int i = 0;
+        board = new Board(name, rowNumbers, colNumbers);
+        Position p;
+        int i = 0;
+        // Savoir si le plateau est conforme
+        if (textBoard.length() == (colNumbers * rowNumbers) + (rowNumbers)) {
             for (int row = 0; row < rowNumbers; row++) {
                 for (int col = 0; col <= colNumbers; col++) {
                     p = new Position(row, col);
@@ -48,8 +50,9 @@ public class TextBoardBuilder implements BoardBuilder {
                     i++;
                 }
             }
-        
-
+        } else {
+            throw new BuilderException("* Impossible de créer le plateau");
+        }
         return board;
     }
 
