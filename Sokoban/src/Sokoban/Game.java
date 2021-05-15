@@ -17,7 +17,7 @@ public class Game implements BoardBuilder {
 
     public Player player;
     public ArrayList<Position> movements = new ArrayList<>();
-    public Board board;
+    public static Board board;
 
     public Game(Player p) {
         this.player = p;
@@ -26,10 +26,10 @@ public class Game implements BoardBuilder {
     public void run() throws BuilderException {
         boolean ended;
 
-        /*board = createBoard();
-        board.drawBoard();*/
+        //board = createBoard();
+        //board.drawBoard();
         
-        //FileBoardBuilder builder = new FileBoardBuilder(level);
+        // FileBoardBuilder builder = new FileBoardBuilder("moibibi.txt");
 
         /*builder.addRow("#####");
         builder.addRow("#x.x#");
@@ -40,7 +40,6 @@ public class Game implements BoardBuilder {
         builder.addRow("#...#");
         builder.addRow("#####");*/
         try {
-            // board = builder.build();
             board.drawBoard();
             do {
                 move(board);

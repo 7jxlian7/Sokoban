@@ -68,12 +68,12 @@ public class Database {
             if (board.name.equals(r.getString("name"))) {
                 insert = false;
             }
-            if(id <= r.getInt("board_id")){
+            if (id <= r.getInt("board_id")) {
                 id = r.getInt("board_id") + 1;
             }
         }
 
-        if(insert){
+        if (insert) {
             PreparedStatement addInBoards = c.prepareStatement("insert into boards values(?,?,?,?)");
 
             addInBoards.setInt(1, id);
@@ -91,11 +91,11 @@ public class Database {
                 addInRows.setString(3, board.rowToText(row));
                 addInRows.execute();
             }
-            
+
             System.out.println("* Le plateau '" + board.name + "' a été inséré dans la base.");
-            
+
         } else {
-             System.out.println("* Erreur de la base : ce plateau existe déjà.");
+            System.out.println("* Erreur de la base : ce plateau existe déjà.");
         }
     }
 
@@ -103,6 +103,11 @@ public class Database {
         PreparedStatement removeBoard = c.prepareStatement("delete from boards where board_id = ?");
         removeBoard.setInt(1, id);
         removeBoard.executeUpdate();
+
+        PreparedStatement removeRows = c.prepareStatement("delete from rows where board_id = ?");
+        removeRows.setInt(1, id);
+        removeRows.execute();
+
         System.out.println("* Le plateau de jeu numéro " + id + " a bien été supprimé.");
     }
 
@@ -112,14 +117,20 @@ public class Database {
         PreparedStatement getBoard = c.prepareStatement("select * from rows where board_id = ?");
         getBoard.setInt(1, id);
         ResultSet r = getBoard.executeQuery();
+        
+        if (r.next()) {
+            PreparedStatement nameQuery = c.prepareStatement("select name from boards where board_id = ?");
+            nameQuery.setInt(1, id);
+            ResultSet r2 = nameQuery.executeQuery();
+            String name = r2.getString("name");
 
-        String textBoard = "";
+            TextBoardBuilder board = new TextBoardBuilder(name);
 
-        while (r.next()) {
-            textBoard.concat(r.getString("description"));
+            while (r.next()) {
+                board.addRow(r.getString("description"));
+            }
+            b = board.build();
         }
-        TextBoardBuilder board = new TextBoardBuilder(textBoard);
-        b = board.build();
         return b;
     }
 

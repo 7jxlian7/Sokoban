@@ -60,6 +60,5 @@ public class TextBoardBuilder implements BoardBuilder {
         textBoard = textBoard.concat(row);
         colNumbers = row.length();
         rowNumbers++;
-
     }
 }

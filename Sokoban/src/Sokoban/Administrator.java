@@ -44,7 +44,12 @@ public class Administrator {
                     listBoards();
                     break;
                 case "3":
-                    //showBoard();
+                    Game.board = db.get(showBoard());
+                    if (Game.board != null) {
+                        Player.main(args);
+                    } else {
+                        System.out.println("* Erreur : Le plateau de jeu choisi n'existe pas.");
+                    }
                     break;
                 case "4":
                     Board b = boardFormFile();
@@ -53,7 +58,6 @@ public class Administrator {
                     }
                     break;
                 case "5":
-                    listBoards();
                     removeBoard();
                     break;
                 case "6":
@@ -67,6 +71,24 @@ public class Administrator {
         }
     }
 
+    public static int showBoard() throws SQLException {
+        int id = -1;
+
+        listBoards();
+        System.out.println("* Veuillez entrer l'ID du plateau de jeu.");
+        System.out.println();
+        Scanner in = new Scanner(System.in);
+        String choice = in.nextLine();
+        System.out.println();
+        try {
+            id = Integer.parseInt(choice);
+        } catch (NumberFormatException ex) {
+            System.out.println("* Erreur : Veuillez entrer un nombre.");
+        }
+
+        return id;
+    }
+
     public static Board boardFormFile() throws BuilderException {
         File dir = new File("data");
         String fileList[] = dir.list();
@@ -74,8 +96,8 @@ public class Administrator {
         Board board = null;
 
         if (fileList != null) {
-            for (int i = 0; i < fileList.length; i++) {
-                System.out.println("* " + fileList[i]);
+            for (String fileList1 : fileList) {
+                System.out.println("* " + fileList1);
             }
         } else {
             System.out.println("* Nom de fichier invalide");
@@ -120,6 +142,7 @@ public class Administrator {
     }
 
     public static void removeBoard() throws SQLException {
+        listBoards();
         int id = -1;
         boolean boardExisting = false;
         System.out.println("* Veuillez entrer l'ID du plateau de jeu à supprimer.");

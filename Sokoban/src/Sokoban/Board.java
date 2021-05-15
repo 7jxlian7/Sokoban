@@ -60,7 +60,7 @@ public class Board {
     }
 
     public void drawContent() {
-
+        buildTextBoard();
         for (int i = 0; i < row; i++) {
             int u = 0;
             if (i <= 9) {
