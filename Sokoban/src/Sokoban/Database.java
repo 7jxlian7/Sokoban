@@ -11,7 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -68,7 +68,9 @@ public class Database {
             if (board.name.equals(r.getString("name"))) {
                 insert = false;
             }
-            id++;
+            if(id <= r.getInt("board_id")){
+                id = r.getInt("board_id") + 1;
+            }
         }
 
         if(insert){
@@ -101,6 +103,7 @@ public class Database {
         PreparedStatement removeBoard = c.prepareStatement("delete from boards where board_id = ?");
         removeBoard.setInt(1, id);
         removeBoard.executeUpdate();
+        System.out.println("* Le plateau de jeu numéro " + id + " a bien été supprimé.");
     }
 
     public static Board get(int id) throws SQLException, BuilderException {
@@ -120,12 +123,12 @@ public class Database {
         return b;
     }
 
-    public static ArrayList<String> getAllBoards() throws SQLException {
-        ArrayList<String> listBoards = new ArrayList<>();
+    public static HashMap<Integer, String> getAllBoards() throws SQLException {
+        HashMap<Integer, String> listBoards = new HashMap<>();
         Statement s = c.createStatement();
         ResultSet r = s.executeQuery("select * from boards");
         while (r.next()) {
-            listBoards.add(r.getString("name"));
+            listBoards.put(r.getInt("board_id"), r.getString("name"));
         }
         return listBoards;
     }

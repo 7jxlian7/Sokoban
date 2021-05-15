@@ -7,8 +7,8 @@ package Sokoban;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -53,7 +53,8 @@ public class Administrator {
                     }
                     break;
                 case "5":
-                    db.clearDatabase();
+                    listBoards();
+                    removeBoard();
                     break;
                 case "6":
                     System.out.println("* La partie vient d'être annulée");
@@ -109,12 +110,38 @@ public class Administrator {
     }
 
     public static void listBoards() throws SQLException {
-        ArrayList<String> boards = db.getAllBoards();
+        HashMap<Integer, String> boards = db.getAllBoards();
         System.out.println("* Voici la liste des plateaux de jeu :");
         System.out.println();
-        for (String boardName : boards) {
-            System.out.println("* " + boardName);
-        }
+        boards.entrySet().forEach(board -> {
+            System.out.println("* " + board.getValue() + " (Board ID : " + board.getKey() + ")");
+        });
+        System.out.println();
     }
 
+    public static void removeBoard() throws SQLException {
+        int id = -1;
+        boolean boardExisting = false;
+        System.out.println("* Veuillez entrer l'ID du plateau de jeu à supprimer.");
+        System.out.println();
+        Scanner in = new Scanner(System.in);
+        String choice = in.nextLine();
+        System.out.println();
+        try {
+            id = Integer.parseInt(choice);
+        } catch (NumberFormatException ex) {
+            System.out.println("* Erreur : Veuillez entrer un nombre.");
+        }
+        HashMap<Integer, String> boards = db.getAllBoards();
+        for (Map.Entry board : boards.entrySet()) {
+            if (board.getKey().equals(id)) {
+                boardExisting = true;
+            }
+        }
+        if (boardExisting && id > -1) {
+            db.remove(id);
+        } else {
+            System.out.println("* Erreur : Le plateau de jeu n'existe pas.");
+        }
+    }
 }
