@@ -13,7 +13,6 @@ public class TextBoardBuilder implements BoardBuilder {
 
     public String name;
     public String textBoard = "";
-    public Board board;
     public int colNumbers;
     public int rowNumbers = 0;
 
@@ -23,7 +22,7 @@ public class TextBoardBuilder implements BoardBuilder {
 
     @Override
     public Board build() throws BuilderException {
-        board = new Board(name, rowNumbers, colNumbers);
+        Board board = new Board(name, rowNumbers, colNumbers);
         Position p;
         int i = 0;
         // Savoir si le plateau est conforme
@@ -51,8 +50,9 @@ public class TextBoardBuilder implements BoardBuilder {
                 }
             }
         } else {
-            throw new BuilderException("* Impossible de créer le plateau");
+            throw new BuilderException("* Impossible de créer le plateau, plateau non conforme.");
         }
+        board.buildTextBoard();
         return board;
     }
 

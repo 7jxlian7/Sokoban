@@ -25,14 +25,15 @@ public class FileBoardBuilder implements BoardBuilder {
     @Override
     public Board build() throws BuilderException {
         Board b = null;
-        try ( Scanner scanner = new Scanner(new File("data/" + level + ".txt"))) {
+        if(!level.contains(".txt")){
+            level = level.concat(".txt");
+        }
+        try ( Scanner scanner = new Scanner(new File("data/" + level))) {
             try {
-                int i = 0;
                 nameOfBoard = scanner.nextLine();
                 TextBoardBuilder board = new TextBoardBuilder(nameOfBoard);
                 while (scanner.hasNextLine()) {
                     board.addRow(scanner.nextLine());
-                    i++;
                 }
 
                 b = board.build();

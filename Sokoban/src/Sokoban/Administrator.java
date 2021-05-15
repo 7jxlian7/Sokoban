@@ -5,6 +5,10 @@
  */
 package Sokoban;
 
+import java.io.File;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 
 /**
@@ -13,9 +17,14 @@ import java.util.Scanner;
  */
 public class Administrator {
 
-    public static void main(String[] args) throws BuilderException {
+    public static Database db = new Database();
+
+    public static void main(String[] args) throws BuilderException, SQLException {
+
         boolean again = true;
+
         while (again) {
+            System.out.println();
             System.out.println("1. Create new database");
             System.out.println("2. List boards");
             System.out.println("3. Show board");
@@ -29,19 +38,22 @@ public class Administrator {
 
             switch (commande) {
                 case "1":
-                    again = false;
+                    db.createDatabase();
                     break;
                 case "2":
-                    //listBoard();
+                    listBoards();
                     break;
                 case "3":
-                    Player.main(args);
+                    //showBoard();
                     break;
                 case "4":
-                    // chercherLivreParTitre(c);
+                    Board b = boardFormFile();
+                    if (b != null) {
+                        db.add(b);
+                    }
                     break;
                 case "5":
-                    // chercherLivreParRef(c);
+                    db.clearDatabase();
                     break;
                 case "6":
                     System.out.println("* La partie vient d'être annulée");
@@ -53,4 +65,56 @@ public class Administrator {
             }
         }
     }
+
+    public static Board boardFormFile() throws BuilderException {
+        File dir = new File("data");
+        String fileList[] = dir.list();
+        boolean build = false;
+        Board board = null;
+
+        if (fileList != null) {
+            for (int i = 0; i < fileList.length; i++) {
+                System.out.println("* " + fileList[i]);
+            }
+        } else {
+            System.out.println("* Nom de fichier invalide");
+        }
+        System.out.println();
+
+        Scanner in = new Scanner(System.in);
+        String choice = in.nextLine();
+        choice = choice.toLowerCase().replaceAll(" ", "");
+        if (!choice.contains(".txt")) {
+            choice = choice.concat(".txt");
+        }
+
+        for (int i = 0; i < fileList.length; i++) {
+            fileList[i] = fileList[i].toLowerCase().replaceAll(" ", "");
+            if (fileList[i].equals(choice)) {
+                build = true;
+            }
+        }
+
+        if (build) {
+            choice = choice.toLowerCase().replaceAll(" ", "");
+
+            FileBoardBuilder b = new FileBoardBuilder(choice);
+            board = b.build();
+            System.out.println();
+        } else {
+            System.out.println("* Le fichier que vous avez saisi est incorrect.");
+        }
+
+        return board;
+    }
+
+    public static void listBoards() throws SQLException {
+        ArrayList<String> boards = db.getAllBoards();
+        System.out.println("* Voici la liste des plateaux de jeu :");
+        System.out.println();
+        for (String boardName : boards) {
+            System.out.println("* " + boardName);
+        }
+    }
+
 }

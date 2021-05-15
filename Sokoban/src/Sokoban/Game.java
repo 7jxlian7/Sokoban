@@ -17,7 +17,7 @@ public class Game implements BoardBuilder {
 
     public Player player;
     public ArrayList<Position> movements = new ArrayList<>();
-    Board board;
+    public Board board;
 
     public Game(Player p) {
         this.player = p;
@@ -29,7 +29,7 @@ public class Game implements BoardBuilder {
         /*board = createBoard();
         board.drawBoard();*/
         
-        FileBoardBuilder builder = new FileBoardBuilder("level1");
+        //FileBoardBuilder builder = new FileBoardBuilder(level);
 
         /*builder.addRow("#####");
         builder.addRow("#x.x#");
@@ -40,7 +40,7 @@ public class Game implements BoardBuilder {
         builder.addRow("#...#");
         builder.addRow("#####");*/
         try {
-            board = builder.build();
+            // board = builder.build();
             board.drawBoard();
             do {
                 move(board);

@@ -29,21 +29,7 @@ public class Board {
         this.col = col;
     }
 
-    public void drawNumbers() {
-        int number = 0;
-        System.out.print("   ");
-        for (int i = 0; i < col; i++) {
-            if (i < 9) {
-                System.out.print(" ");
-            }
-            System.out.print(number + " ");
-            number += 1;
-        }
-        System.out.println("");
-    }
-
-    public void drawContent() {
-        
+    public void buildTextBoard(){
         board = new char[row][col];
         for (char[] row : board) {
             Arrays.fill(row, '.');
@@ -58,6 +44,22 @@ public class Board {
             board[wall.row][wall.col] = '#';
         });
         board[character.row][character.col] = 'P';
+    }
+    
+    public void drawNumbers() {
+        int number = 0;
+        System.out.print("   ");
+        for (int i = 0; i < col; i++) {
+            if (i < 9) {
+                System.out.print(" ");
+            }
+            System.out.print(number + " ");
+            number += 1;
+        }
+        System.out.println("");
+    }
+
+    public void drawContent() {
 
         for (int i = 0; i < row; i++) {
             int u = 0;
@@ -154,5 +156,14 @@ public class Board {
             }
         }
         return isBox;
+    }
+    
+    public String rowToText(int rowNumber){
+        String rowText = "";
+        for(int c = 0; c < col; c++){
+            String oneChar = Character.toString(board[rowNumber][c]);
+            rowText = rowText.concat(oneChar);
+        }
+        return rowText;
     }
 }
