@@ -34,18 +34,6 @@ public class Database {
         }
     }
 
-    public static void main(String[] args) throws BuilderException {
-
-        String path = "db/librairie.sqlite3";
-        String URL = "jdbc:sqlite:" + path;
-        loadDrivers();
-        try (Connection connection = DriverManager.getConnection(URL)) {
-
-        } catch (SQLException ex) {
-            System.err.println("* Base " + URL + " introuvable.");
-        }
-    }
-
     public static void loadDrivers() {
         String sqlite_driver = "org.sqlite.JDBC";
         try {
@@ -98,6 +86,23 @@ public class Database {
             System.out.println("* Erreur de la base : ce plateau existe déjà.");
         }
     }
+    
+    public static void update(int board_id, Board board) throws SQLException{
+        PreparedStatement getBoard = c.prepareStatement("select * from boards where board_id = ?");
+        getBoard.setInt(1, board_id);
+        ResultSet r = getBoard.executeQuery();
+        
+        PreparedStatement addInRows = c.prepareStatement("update rows set description = ? where board_id = ? and row_num = ?");
+
+            for (int row = 0; row < board.row; row++) {
+                String textRow = board.rowToText(row);
+                addInRows.setString(1, textRow);
+                addInRows.setInt(2, board_id);
+                addInRows.setInt(3, row);
+                addInRows.execute();
+            }
+        System.out.println("* Le plateau '" + board.name + "' a été mis à jour dans la base.");
+    }
 
     public static void remove(int id) throws SQLException {
         PreparedStatement removeBoard = c.prepareStatement("delete from boards where board_id = ?");
@@ -125,7 +130,9 @@ public class Database {
             String name = r2.getString("name");
 
             TextBoardBuilder board = new TextBoardBuilder(name);
-
+            
+            board.addRow(r.getString("description"));
+            
             while (r.next()) {
                 board.addRow(r.getString("description"));
             }
@@ -154,5 +161,6 @@ public class Database {
         Statement s = c.createStatement();
         s.execute("delete from boards");
         s.execute("delete from rows");
+        System.out.println("* La base de données vient d'être effacée.");
     }
 }

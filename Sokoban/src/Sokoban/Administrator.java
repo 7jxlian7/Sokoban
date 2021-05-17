@@ -30,7 +30,8 @@ public class Administrator {
             System.out.println("3. Show board");
             System.out.println("4. Add board from file");
             System.out.println("5. Remove board from database [DANGEROUS]");
-            System.out.println("6. Quit");
+            System.out.println("6. Clear all boards from database [DANGEROUS]");
+            System.out.println("7. Quit");
 
             Scanner in = new Scanner(System.in);
             String commande = in.nextLine();
@@ -44,8 +45,10 @@ public class Administrator {
                     listBoards();
                     break;
                 case "3":
-                    Game.board = db.get(showBoard());
+                    int board_id = showBoard();
+                    Game.board = db.get(board_id);
                     if (Game.board != null) {
+                        Game.board_id = board_id;
                         Player.main(args);
                     } else {
                         System.out.println("* Erreur : Le plateau de jeu choisi n'existe pas.");
@@ -61,6 +64,9 @@ public class Administrator {
                     removeBoard();
                     break;
                 case "6":
+                    db.clearDatabase();
+                    break;
+                case "7":
                     System.out.println("* La partie vient d'être annulée");
                     System.exit(0);
                     break;

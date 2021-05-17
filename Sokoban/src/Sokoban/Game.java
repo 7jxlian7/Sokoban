@@ -6,6 +6,7 @@
 package Sokoban;
 
 import java.io.FileNotFoundException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -18,12 +19,13 @@ public class Game implements BoardBuilder {
     public Player player;
     public ArrayList<Position> movements = new ArrayList<>();
     public static Board board;
+    public static int board_id;
 
     public Game(Player p) {
         this.player = p;
     }
 
-    public void run() throws BuilderException {
+    public void run() throws BuilderException, SQLException {
         boolean ended;
 
         //board = createBoard();
@@ -82,24 +84,25 @@ public class Game implements BoardBuilder {
         return b.targets.equals(b.boxes);
     }
 
-    public Position move(Board b) {
+    public Position move(Board b) throws SQLException {
         Position p = writeCoordinates(b);
         return p;
     }
 
-    public String readCoordinates(Board b) {
+    public String readCoordinates(Board b) throws SQLException {
         String choice;
         Scanner in = new Scanner(System.in);
         choice = in.nextLine();
         if ("/leave".equals(choice) || "/quit".equals(choice)) {
             System.out.println("* La partie vient d'être annulée");
+            Database.update(board_id, b);
             System.exit(0);
         }
         choice = choice.toUpperCase();
         return choice;
     }
 
-    public Position writeCoordinates(Board b) {
+    public Position writeCoordinates(Board b) throws SQLException {
         Position p = null;
         String choice;
         boolean askAgain;
