@@ -31,7 +31,8 @@ public class Administrator {
             System.out.println("4. Add board from file");
             System.out.println("5. Remove board from database [DANGEROUS]");
             System.out.println("6. Clear all boards from database [DANGEROUS]");
-            System.out.println("7. Quit");
+            System.out.println("7. Delete database [DANGEROUS]");
+            System.out.println("8. Quit");
 
             Scanner in = new Scanner(System.in);
             String commande = in.nextLine();
@@ -45,13 +46,16 @@ public class Administrator {
                     listBoards();
                     break;
                 case "3":
-                    int board_id = showBoard();
-                    Game.board = db.get(board_id);
-                    if (Game.board != null) {
-                        Game.board_id = board_id;
-                        Player.main(args);
-                    } else {
-                        System.out.println("* Erreur : Le plateau de jeu choisi n'existe pas.");
+                    HashMap<Integer, String> boards = db.getAllBoards();
+                    if(!boards.isEmpty()){
+                        int board_id = showBoard();
+                        Game.board = db.get(board_id);
+                        if (Game.board != null) {
+                            Game.board_id = board_id;
+                            Player.main(args);
+                        } else {
+                            System.out.println("* Erreur : Le plateau de jeu choisi n'existe pas.");
+                        }
                     }
                     break;
                 case "4":
@@ -67,6 +71,9 @@ public class Administrator {
                     db.clearDatabase();
                     break;
                 case "7":
+                    db.deleteDatabase();
+                    break;
+                case "8":
                     System.out.println("* La partie vient d'être annulée");
                     System.exit(0);
                     break;
@@ -80,16 +87,19 @@ public class Administrator {
     public static int showBoard() throws SQLException {
         int id = -1;
 
-        listBoards();
-        System.out.println("* Veuillez entrer l'ID du plateau de jeu.");
-        System.out.println();
-        Scanner in = new Scanner(System.in);
-        String choice = in.nextLine();
-        System.out.println();
-        try {
-            id = Integer.parseInt(choice);
-        } catch (NumberFormatException ex) {
-            System.out.println("* Erreur : Veuillez entrer un nombre.");
+        HashMap<Integer, String> boards = db.getAllBoards();
+        if(!boards.isEmpty()){
+            listBoards();
+            System.out.println("* Veuillez entrer l'ID du plateau de jeu.");
+            System.out.println();
+            Scanner in = new Scanner(System.in);
+            String choice = in.nextLine();
+            System.out.println();
+            try {
+                id = Integer.parseInt(choice);
+            } catch (NumberFormatException ex) {
+                System.out.println("* Erreur : Veuillez entrer un nombre.");
+            }
         }
 
         return id;
@@ -138,12 +148,16 @@ public class Administrator {
     }
 
     public static void listBoards() throws SQLException {
-        HashMap<Integer, String> boards = db.getAllBoards();
-        System.out.println("* Voici la liste des plateaux de jeu :");
+        HashMap<Integer, String> boards = db.getAllBoards();  
+        if(!boards.isEmpty()){
+            System.out.println("* Voici la liste des plateaux de jeu :");
         System.out.println();
-        boards.entrySet().forEach(board -> {
-            System.out.println("* " + board.getValue() + " (Board ID : " + board.getKey() + ")");
-        });
+            boards.entrySet().forEach(board -> {
+                System.out.println("* " + board.getValue() + " (Board ID : " + board.getKey() + ")");
+            });
+        } else {
+            System.out.println("* Il n'y a aucun plateau enregistré dans la base.");
+        }
         System.out.println();
     }
 
