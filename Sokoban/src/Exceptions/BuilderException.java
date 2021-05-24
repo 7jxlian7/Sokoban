@@ -3,12 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Sokoban;
+
+package Exceptions;
 
 /**
  *
  * @author Julian Forme
  */
-public interface BoardBuilder {
-    Board build() throws BuilderException;
+public class BuilderException extends Exception {
+    public BuilderException(String s){
+        System.out.println(s);
+    }
 }

@@ -5,7 +5,10 @@
  */
 package Sokoban;
 
-import java.io.FileNotFoundException;
+import Exceptions.BuilderException;
+import Board.Position;
+import Board.Board;
+import Board.Directions;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -14,7 +17,7 @@ import java.util.Scanner;
  *
  * @author jforme
  */
-public class Game implements BoardBuilder {
+public class Game  {
 
     public Player player;
     public ArrayList<Position> movements = new ArrayList<>();
@@ -25,22 +28,15 @@ public class Game implements BoardBuilder {
         this.player = p;
     }
 
+    /**
+     * Méthode permettant de jouer au jeu.
+     * 
+     * @throws BuilderException
+     * @throws SQLException
+     */
     public void run() throws BuilderException, SQLException {
         boolean ended;
 
-        //board = createBoard();
-        //board.drawBoard();
-        
-        // FileBoardBuilder builder = new FileBoardBuilder("moibibi.txt");
-
-        /*builder.addRow("#####");
-        builder.addRow("#x.x#");
-        builder.addRow("#x.C#");
-        builder.addRow("#C..#");
-        builder.addRow("#CP.#");
-        builder.addRow("#.#.#");
-        builder.addRow("#...#");
-        builder.addRow("#####");*/
         try {
             board.drawBoard();
             do {
@@ -55,20 +51,10 @@ public class Game implements BoardBuilder {
 
     }
 
-    public Board createBoard() {
-        board.addHorizontalWall(0, 0, 5);
-        board.addHorizontalWall(9, 0, 6);
-        board.addVerticalWall(0, 0, 10);
-        board.addVerticalWall(0, 5, 10);
-        board.addHorizontalWall(5, 2, 2);
-        board.addBox(2, 1);
-        board.addBox(2, 4);
-        board.addTarget(3, 1);
-        board.addTarget(1, 4);
-        board.setPosition(3, 4);
-        return board;
-    }
-
+    /**
+     * Méthode permettant d'afficher le texte lorsque qu'une partie est gagnée.
+     * 
+     */
     public void displayWinningText() {
         System.out.println("* Partie terminée");
         System.out.println("* Félicitations! Voici la liste des déplacements effectués : ");
@@ -80,28 +66,55 @@ public class Game implements BoardBuilder {
         System.out.println();
     }
 
+    /**
+     * Méthode permettant de tester si une partie est terminée.
+     * 
+     * @param b le board à tester.
+     * @return true ssi la partie est terminée.
+     */
     public boolean ended(Board b) {
         return b.targets.equals(b.boxes);
     }
 
+    /**
+     * Méthode permettant de faire bouger le joueur.
+     * 
+     * @param b le board sur lequel se déroule le jeu.
+     * @return la position choisie par le joueur.
+     * @throws SQLException
+     */
     public Position move(Board b) throws SQLException {
         Position p = writeCoordinates(b);
         return p;
     }
 
+    /**
+     * Méthode permettant de lire les coordonnées entrées par le joueur.
+     * 
+     * @param b le board sur lequel se déroule le jeu.
+     * @return le choix de l'utilisateur
+     * @throws SQLException
+     */
     public String readCoordinates(Board b) throws SQLException {
         String choice;
         Scanner in = new Scanner(System.in);
         choice = in.nextLine();
         if ("/leave".equals(choice) || "/quit".equals(choice)) {
             System.out.println("* La partie vient d'être annulée");
-            Database.update(board_id, b);
+            // Database.update(board_id, b);
             System.exit(0);
         }
         choice = choice.toUpperCase();
         return choice;
     }
 
+    /**
+     * Méthode permettant d'intéragir avec l'utilisateur pour une action.
+     * 
+     * @param b le board sur lequel se déroule le jeu.
+     * @return la nouvelle position de l'utilisateur
+     * @throws SQLException
+     */
     public Position writeCoordinates(Board b) throws SQLException {
         Position p = null;
         String choice;
@@ -133,6 +146,13 @@ public class Game implements BoardBuilder {
         return p;
     }
 
+     /**
+     * Méthode permettant d'effectuer les déplacements sur le plateau.
+     * 
+     * @param board le board sur lequel se déroule le jeu.
+     * @param d la direction choisie.
+     * @return la nouvelle position de l'utilisateur
+     */
     public Position makeMoves(Board board, Directions d) {
         Position nextPosition = new Position(board.character.row + d.mvtVertical(), board.character.col + d.mvtHorizontal());
 
@@ -152,6 +172,11 @@ public class Game implements BoardBuilder {
         return nextPosition;
     }
 
+    /**
+     * Méthode permettant d'effectuer le déplacement du joueur.
+     * 
+     * @param nextPosition la position choisie par le joueur.
+     */
     public void moveCharacter(Position nextPosition) {
         board.setPosition(nextPosition.row, nextPosition.col);
         addPosition(nextPosition);
@@ -183,10 +208,5 @@ public class Game implements BoardBuilder {
 
     public void addPosition(Position p) {
         movements.add(p);
-    }
-
-    @Override
-    public Board build() throws BuilderException {
-        return createBoard();
     }
 }

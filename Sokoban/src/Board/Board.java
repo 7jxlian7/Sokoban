@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Sokoban;
+package Board;
 
+import Exceptions.BuilderException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,13 +16,13 @@ import java.util.Set;
  */
 public class Board {
 
-    String name;
-    int row, col;
-    Set<Position> boxes = new HashSet<>();
-    Set<Position> walls = new HashSet<>();
-    Set<Position> targets = new HashSet<>();
-    Position character;
-    char[][] board;
+    public String name;
+    public int row, col;
+    public Set<Position> boxes = new HashSet<>();
+    public Set<Position> walls = new HashSet<>();
+    public Set<Position> targets = new HashSet<>();
+    public Position character;
+    public char[][] board;
 
     public Board(String name, int row, int col) {
         this.name = name;
@@ -29,6 +30,10 @@ public class Board {
         this.col = col;
     }
 
+    /**
+     * Méthode permettant de créer un plateau depuis les informations contenues
+     * dans les HashSet.
+     */
     public void buildTextBoard(){
         board = new char[row][col];
         for (char[] row : board) {
@@ -46,6 +51,9 @@ public class Board {
         board[character.row][character.col] = 'P';
     }
     
+    /**
+     * Méthode permettant de dessiner des nombres au-dessus du plateau.
+     */
     public void drawNumbers() {
         int number = 0;
         System.out.print("   ");
@@ -59,6 +67,9 @@ public class Board {
         System.out.println("");
     }
 
+    /**
+     * Méthode permettant de l'intérieur du plateau.
+     */
     public void drawContent() {
         buildTextBoard();
         for (int i = 0; i < row; i++) {
@@ -76,6 +87,11 @@ public class Board {
         
     }
 
+    /**
+     * Méthode permettant de dessiner le plateau.
+     * 
+     * @throws BuilderException
+     */
     public void drawBoard() throws BuilderException {
         System.out.println();
         System.out.println("* " + name + " *");
@@ -85,59 +101,89 @@ public class Board {
         System.out.println(); 
     }
 
+    /**
+     * Méthode permettant de définir la position du joueur.
+     * 
+     * @param row ligne où déplacer le joueur.
+     * @param col colonne où déplacer le joueur.
+     */
     public void setPosition(int row, int col) {
         character = new Position(row, col);
     }
 
+    /**
+     * Méthode permettant d'ajouter une caisse.
+     * 
+     * @param row ligne où ajouter la caisse.
+     * @param col colonne où ajouter la caisse.
+     */
     public void addBox(int row, int col) {
         boxes.add(new Position(row, col));
     }
 
+    /**
+     * Méthode permettant d'ajouter une cible.
+     * 
+     * @param row ligne où ajouter la cible.
+     * @param col colonne où ajouter la cible.
+     */
     public void addTarget(int row, int col) {
         targets.add(new Position(row, col));
     }
 
+    /**
+     * Méthode permettant d'ajouter un mur horizontal.
+     * 
+     * @param row ligne où ajouter la mur.
+     * @param col colonne où ajouter la mur.
+     * @param length longueur du mur.
+     */
     public void addHorizontalWall(int row, int col, int length) {
         for (int i = 0; i < length; i++) {
             walls.add(new Position(row, col + i));
         }
     }
 
+    /**
+     * Méthode permettant d'ajouter un mur vertical.
+     * 
+     * @param row ligne où ajouter la mur.
+     * @param col colonne où ajouter la mur.
+     * @param length longueur du mur.
+     */
     public void addVerticalWall(int row, int col, int length) {
         for (int i = 0; i < length; i++) {
             walls.add(new Position(row + i, col));
         }
     }
 
-    public void showInfos() {
-
-        System.out.println("Walls : ");
-        walls.forEach(p -> {
-            System.out.println("* " + p.row + "," + p.col);
-        });
-
-        System.out.println("Boxes : ");
-        boxes.forEach(p -> {
-            System.out.println("* " + p.row + "," + p.col);
-        });
-
-        System.out.println("Targets : ");
-        targets.forEach(p -> {
-            System.out.println("* " + p.row + "," + p.col);
-        });
-
-        System.out.println("Character : ");
-        System.out.println("* " + character.row + "," + character.col);
-    }
-
+    /**
+     * Méthode permettant de vérifier si une position est dans le plateau.
+     * 
+     * @param p position à tester.
+     * @return true ssi la position est dans le plateau.
+     */
     public boolean isInBoard(Position p) {
         return p.row >= 0 && p.row < row && p.col >= 0 && p.col < col;
     }
 
+    /**
+     * Méthode permettant de vérifier si une position est libre (pas occupée
+     * par une caisse ni par un mur).
+     * 
+     * @param p position à tester.
+     * @return true ssi la position est libre.
+     */
     public boolean isFree(Position p){
         return !isCollisionWithWall(p) && !isCollisionWithBox(p);
     }
     
+    /**
+     * Méthode permettant de vérifier si une position est en collision avec un mur
+     * 
+     * @param p position à tester.
+     * @return true ssi la position est en collision.
+     */
     public boolean isCollisionWithWall(Position p) {
         boolean isWall = false;
         for (Position wall : walls) {
@@ -148,7 +194,13 @@ public class Board {
         return isWall;
     }
 
-    boolean isCollisionWithBox(Position p) {
+    /**
+     * Méthode permettant de vérifier si une position est en collision avec une caisse.
+     * 
+     * @param p position à tester.
+     * @return true ssi la position est en collision.
+     */
+    public boolean isCollisionWithBox(Position p) {
         boolean isBox = false;
         for(Position box : boxes){
             if (box.row == p.row && box.col == p.col) {
@@ -158,6 +210,12 @@ public class Board {
         return isBox;
     }
     
+    /**
+     * Méthode permettant de convertir une ligne du plateau en texte.
+     * 
+     * @param rowNumber ligne à convertir en texte.
+     * @return la chaine de caractère correspondant à la ligne choisie.
+     */
     public String rowToText(int rowNumber){
         String rowText = "";
         for(int c = 0; c < col; c++){

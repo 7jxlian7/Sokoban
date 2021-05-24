@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Sokoban;
+package Board;
 
 /**
  *
@@ -23,7 +23,6 @@ public enum Directions {
      * Liste toutes les directions cardinales.
      *
      * @return un tableau de Directions contenant toutes les directions cardinales.
-     * @author Descomps Théo
      */
     static Directions[] cardinales() {
         Directions[] cardinales = {NORD, SUD, EST, OUEST};
@@ -34,7 +33,7 @@ public enum Directions {
      * Liste toutes les directions diagonales.
      *
      * @return un tableau de Directions contenant toutes les directions diagonales.
-     * @author Descomps Théo
+     * @author Julian Forme
      */
     static Directions[] diagonales() {
         Directions[] diagonales = {NORD_EST, NORD_OUEST, SUD_EST, SUD_OUEST};
@@ -45,9 +44,8 @@ public enum Directions {
      * Retourne le mouvement vertical correspondant à la direction appelant la méthode
      *
      * @return le mouvement vertical correspondant à la direction
-     * @author Descomps Théo
      */
-    int mvtVertical() {
+    public int mvtVertical() {
         int mvt = 0;
         switch (this) {
             case NORD:
@@ -68,9 +66,8 @@ public enum Directions {
      * Retourne le mouvement horizontal correspondant à la direction appelant la méthode
      *
      * @return le mouvement vertical correspondant à la direction
-     * @author Descomps Théo
      */
-    int mvtHorizontal() {
+    public int mvtHorizontal() {
         int mvt = 0;
         switch (this) {
             case EST:

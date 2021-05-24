@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Sokoban;
+package Board;
 
 import java.util.Objects;
 
@@ -13,7 +13,7 @@ import java.util.Objects;
  */
 public class Position {
 
-    int row, col;
+    public int row, col;
 
     public Position(int x, int y) {
         this.row = x;

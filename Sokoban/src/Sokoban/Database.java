@@ -5,6 +5,9 @@
  */
 package Sokoban;
 
+import Exceptions.BuilderException;
+import Board.Board;
+import Board.TextBoardBuilder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -44,6 +47,13 @@ public class Database {
         }
     }
 
+    /**
+     * Méthode permettant d'ajouter un plateau dans la base.
+     * 
+     * @param board le plateau à ajouter
+     * @throws BuilderException
+     * @throws SQLException
+     */
     public void add(Board board) throws SQLException, BuilderException {
 
         int id = 0;
@@ -91,27 +101,12 @@ public class Database {
         }
     }
 
-    public static void update(int board_id, Board board) throws SQLException {
-        try {
-            PreparedStatement getBoard = c.prepareStatement("select * from boards where board_id = ?");
-            getBoard.setInt(1, board_id);
-            ResultSet r = getBoard.executeQuery();
-
-            PreparedStatement addInRows = c.prepareStatement("update rows set description = ? where board_id = ? and row_num = ?");
-
-            for (int row = 0; row < board.row; row++) {
-                String textRow = board.rowToText(row);
-                addInRows.setString(1, textRow);
-                addInRows.setInt(2, board_id);
-                addInRows.setInt(3, row);
-                addInRows.execute();
-            }
-            System.out.println("* Le plateau '" + board.name + "' a été mis à jour dans la base.");
-        } catch (SQLiteException e) {
-            System.out.println("* Erreur de la base : la base n'existe pas.");
-        }
-    }
-
+    /**
+     * Méthode permettant de supprimer un plateau de la base.
+     * 
+     * @param id l'id du plateau à supprimer.
+     * @throws SQLException
+     */
     public void remove(int id) throws SQLException {
         try {
             PreparedStatement removeBoard = c.prepareStatement("delete from boards where board_id = ?");
@@ -128,6 +123,14 @@ public class Database {
         }
     }
 
+    /**
+     * Méthode permettant de récupérer un plateau depuis un id.
+     * 
+     * @param id l'id du plateau à récupérer.
+     * @return le board récupéré.
+     * @throws BuilderException
+     * @throws SQLException
+     */
     public Board get(int id) throws SQLException, BuilderException {
         Board b = null;
         try {
@@ -157,6 +160,12 @@ public class Database {
         return b;
     }
 
+    /**
+     * Méthode permettant de récupérer tous les plateaux de la base.
+     * 
+     * @return une liste des plateaux de la base associés à leur id.
+     * @throws SQLException
+     */
     public HashMap<Integer, String> getAllBoards() throws SQLException {
         HashMap<Integer, String> listBoards = new HashMap<>();
         try {
@@ -172,12 +181,23 @@ public class Database {
         return listBoards;
     }
 
+    /**
+     * Méthode permettant de créer les tables de la base de données.
+     * 
+     * @throws SQLException
+     */
     public void createDatabase() throws SQLException {
         Statement s = c.createStatement();
         s.execute("create table if not exists boards(board_id integer primary key, name text, nb_rows integer, nb_cols integer)");
         s.execute("create table if not exists rows(board_id integer, row_num integer, description text)");
+        System.out.println("* La base de données vient d'être créée.");
     }
 
+    /**
+     * Méthode permettant de vider les tables de la base de données.
+     * 
+     * @throws SQLException
+     */
     public void clearDatabase() throws SQLException {
         try {
             Statement s = c.createStatement();
@@ -190,6 +210,11 @@ public class Database {
 
     }
 
+    /**
+     * Méthode permettant de supprimer les tables de la base de données.
+     * 
+     * @throws SQLException
+     */
     public void deleteDatabase() throws SQLException {
         Statement s = c.createStatement();
         s.execute("drop table if exists boards");

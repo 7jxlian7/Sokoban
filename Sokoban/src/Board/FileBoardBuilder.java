@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Sokoban;
+package Board;
 
+import Exceptions.BuilderException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -22,6 +23,12 @@ public class FileBoardBuilder implements BoardBuilder {
         this.level = lvl.toLowerCase();
     }
 
+    /**
+     * Méthode permettant de construire un plateau.
+     * 
+     * @return le plateau construit.
+     * @throws BuilderException
+     */
     @Override
     public Board build() throws BuilderException {
         Board b = null;

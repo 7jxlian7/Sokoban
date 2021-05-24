@@ -3,7 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Sokoban;
+package Board;
+
+import Board.BoardBuilder;
+import Exceptions.BuilderException;
 
 /**
  *
@@ -20,6 +23,12 @@ public class TextBoardBuilder implements BoardBuilder {
         this.name = name;
     }
 
+    /**
+     * Méthode permettant de construire un plateau.
+     * 
+     * @return le plateau construit.
+     * @throws BuilderException
+     */
     @Override
     public Board build() throws BuilderException {
         Board board = new Board(name, rowNumbers, colNumbers);
@@ -56,7 +65,12 @@ public class TextBoardBuilder implements BoardBuilder {
         return board;
     }
 
-    void addRow(String row) {
+    /**
+     * Méthode permettant d'ajouter une ligne au plateau textuel.
+     * 
+     * @param row ligne à ajouter.
+     */
+    public void addRow(String row) {
         textBoard = textBoard.concat(row);
         colNumbers = row.length();
         rowNumbers++;

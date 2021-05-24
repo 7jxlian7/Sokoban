@@ -5,6 +5,9 @@
  */
 package Sokoban;
 
+import Exceptions.BuilderException;
+import Board.FileBoardBuilder;
+import Board.Board;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -17,6 +20,9 @@ import java.util.Scanner;
  */
 public class Administrator {
 
+    /**
+     *
+     */
     public static Database db = new Database();
 
     public static void main(String[] args) throws BuilderException, SQLException {
@@ -46,16 +52,8 @@ public class Administrator {
                     listBoards();
                     break;
                 case "3":
-                    HashMap<Integer, String> boards = db.getAllBoards();
-                    if(!boards.isEmpty()){
-                        int board_id = showBoard();
-                        Game.board = db.get(board_id);
-                        if (Game.board != null) {
-                            Game.board_id = board_id;
-                            Player.main(args);
-                        } else {
-                            System.out.println("* Erreur : Le plateau de jeu choisi n'existe pas.");
-                        }
+                    if(isGameReady()){
+                        Player.main(args);
                     }
                     break;
                 case "4":
@@ -84,11 +82,17 @@ public class Administrator {
         }
     }
 
+    /**
+     * Méthode permettant de demander l'affichage d'un plateau de jeu.
+     *
+     * @return l'entier du board choisi
+     * @throws SQLException
+     */
     public static int showBoard() throws SQLException {
         int id = -1;
 
         HashMap<Integer, String> boards = db.getAllBoards();
-        if(!boards.isEmpty()){
+        if (!boards.isEmpty()) {
             listBoards();
             System.out.println("* Veuillez entrer l'ID du plateau de jeu.");
             System.out.println();
@@ -105,6 +109,12 @@ public class Administrator {
         return id;
     }
 
+    /**
+     * Méthode permettant de construire un plateau à partir d'un fichier.
+     *
+     * @return le plateau construit
+     * @throws BuilderException
+     */
     public static Board boardFormFile() throws BuilderException {
         File dir = new File("data");
         String fileList[] = dir.list();
@@ -147,11 +157,16 @@ public class Administrator {
         return board;
     }
 
+    /**
+     * Méthode permettant de lister les plateaux de la base de données.
+     *
+     * @throws SQLException
+     */
     public static void listBoards() throws SQLException {
-        HashMap<Integer, String> boards = db.getAllBoards();  
-        if(!boards.isEmpty()){
+        HashMap<Integer, String> boards = db.getAllBoards();
+        if (!boards.isEmpty()) {
             System.out.println("* Voici la liste des plateaux de jeu :");
-        System.out.println();
+            System.out.println();
             boards.entrySet().forEach(board -> {
                 System.out.println("* " + board.getValue() + " (Board ID : " + board.getKey() + ")");
             });
@@ -161,6 +176,11 @@ public class Administrator {
         System.out.println();
     }
 
+    /**
+     * Méthode permettant de supprimer un plateau choisi par l'utilisateur.
+     *
+     * @throws SQLException
+     */
     public static void removeBoard() throws SQLException {
         listBoards();
         int id = -1;
@@ -186,5 +206,23 @@ public class Administrator {
         } else {
             System.out.println("* Erreur : Le plateau de jeu n'existe pas.");
         }
+    }
+
+    public static boolean isGameReady() throws SQLException, BuilderException {
+        HashMap<Integer, String> boards = db.getAllBoards();
+        boolean launch = false;
+        if (!boards.isEmpty()) {
+            int board_id = showBoard();
+            Game.board = db.get(board_id);
+            if (Game.board != null) {
+                Game.board_id = board_id;
+                launch = true;
+            } else {
+                System.out.println("* Erreur : Le plateau de jeu choisi n'existe pas.");
+            }
+        } else {
+            System.out.println("* Erreur : Aucun plateau de jeu n'existe.");
+        }
+        return launch;
     }
 }

@@ -1,5 +1,6 @@
 package Sokoban;
 
+import Exceptions.BuilderException;
 import java.sql.SQLException;
 
 /*
